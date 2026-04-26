@@ -412,7 +412,7 @@ except Exception as e:
 
 st.subheader(f"{company_name}  `{stock}`")
 if sector:
-    st.caption(f"📂 {sector}  ·  {industry}")
+    st.caption(f"📂 {sector or 'N/A'}  ·  {industry or 'N/A'}")
 
 st.divider()
 
