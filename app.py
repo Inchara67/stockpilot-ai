@@ -29,8 +29,12 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 
-body {
+.stApp {
     background-color: #0a0a0a;
+}
+
+.block-container {
+    padding-top: 2rem !important;
 }
 
 /* Container */
@@ -402,8 +406,8 @@ if not valid:
 try:
     info = yf.Ticker(stock).info
     company_name = info.get("longName") or info.get("shortName") or stock_input
-    sector = info.get("sector")
-    industry = info.get("industry")
+    sector = info.get("sector", "")
+    industry = info.get("industry", "")
 except Exception as e:
     logger.exception("Failed to fetch company info for %s: %s", stock, e)
     company_name = stock_input
@@ -412,7 +416,7 @@ except Exception as e:
 
 st.subheader(f"{company_name}  `{stock}`")
 if sector:
-    st.caption(f"📂 {sector or 'N/A'}  ·  {industry or 'N/A'}")
+    st.caption(f"📂 {sector}   ·  {industry}")
 
 st.divider()
 
