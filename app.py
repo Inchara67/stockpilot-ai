@@ -17,7 +17,16 @@ from calculator import run_monte_carlo, format_currency
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
+@st.cache_data(ttl=3600)
+def get_company_info(ticker):
+    try:
+        return yf.Ticker(ticker).info
+    except:
+        return {}
+
 # PAGE CONFIG
+
 
 st.set_page_config(
     page_title="AI Stock Advisor",
@@ -372,20 +381,26 @@ if not valid:
 
 # STOCK HEADER
 
-try:
-    info = yf.Ticker(stock).info
-    company_name = info.get("longName") or info.get("shortName") or stock_input
-    sector = info.get("sector", "")
-    industry = info.get("industry", "")
-except Exception as e:
-    logger.exception("Failed to fetch company info for %s: %s", stock, e)
-    company_name = stock_input
-    sector = ""
-    industry = ""
+info = get_company_info(stock)
+
+company_name = info.get("longName") or info.get("shortName") or stock_input
+sector = info.get("sector") or "Unknown Sector"
+industry = info.get("industry") or "Unknown Industry"
 
 st.subheader(f"{company_name}  `{stock}`")
-if sector:
-    st.caption(f"📂 {sector}  ·  {industry}")
+st.markdown(
+    f"""
+    <div style="
+        color: #9ca3af;
+        font-size: 14px;
+        margin-top: -8px;
+        margin-bottom: 10px;
+    ">
+        📂 {sector} · {industry}
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 st.divider()
 
