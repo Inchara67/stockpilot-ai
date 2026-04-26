@@ -811,4 +811,4 @@ if "India" in market:
         "🕐 NSE/BSE trading hours: 9:15 AM – 3:30 PM IST (Mon–Fri). Outside hours, prices reflect last close.")
 else:
     st.caption(
-        "🕐 NYSE/NASDAQ trading hours: 9:30 AM – 4:00 PM ET (Mon–Fri). Outside hours, prices reflect last close.")  LIKE THIS?
+        "🕐 NYSE/NASDAQ trading hours: 9:30 AM – 4:00 PM ET (Mon–Fri). Outside hours, prices reflect last close.") 
