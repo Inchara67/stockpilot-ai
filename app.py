@@ -17,18 +17,6 @@ from calculator import run_monte_carlo, format_currency
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
-@st.cache_data(ttl=300)
-def get_company_info(ticker):
-    try:
-        info = yf.Ticker(ticker).info
-        if not info or "sector" not in info:
-            return None
-        
-        return info
-    except:
-        return None
-
 # PAGE CONFIG
 
 st.set_page_config(
@@ -41,31 +29,23 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 
-* {
-    box-sizing: border-box;
-}
 .stApp {
     background-color: #0a0a0a;
 }
 
-header {visibility: hidden;}
-
-.main {
-    padding-top: 0rem !important;
-}
-
 .block-container {
-    padding-top: 0rem !important;
+    padding-top: 1rem !important;
 }
+
+/* Container */
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 40vh;  
     flex-direction: column;
-
-    margin-top: 40px; 
-    margin-bottom: 20px;
     gap: 10px;
+    padding-top: 60px;  
 }
 
 /* Main Text */
@@ -299,28 +279,24 @@ header {visibility: hidden;}
     }
 }
 </style>
+
+<div class="container">
+    <div class="glitch-text">AI Stock Advisor</div>
+    <div class="trend-divider">
+    <svg viewBox="0 0 300 60" preserveAspectRatio="none">
+        <!-- zig-zag stock line -->
+        <path class="trend-path"
+              d="M0 40 L60 25 L120 35 L180 15 L240 25 L300 10" />
+              <circle class="trend-dot" cx="0" cy="0"></circle>
+    </svg>
+</div>
+    <p class="subtitle">
+        Real-time predictions · News sentiment · Investment calculator
+    </p>
+</div>
+<div class="section-divider"></div>
 """, unsafe_allow_html=True)
 
-hero = st.container()
-
-with hero:
-    st.markdown("""
-    <div class="container">
-        <div class="glitch-text">AI Stock Advisor</div>
-        <div class="trend-divider">
-            <svg viewBox="0 0 300 60" preserveAspectRatio="none">
-                <path class="trend-path"
-                      d="M0 40 L60 25 L120 35 L180 15 L240 25 L300 10" />
-                <circle class="trend-dot" cx="0" cy="0"></circle>
-            </svg>
-        </div>
-        <p class="subtitle">
-            Real-time predictions · News sentiment · Investment calculator
-        </p>
-    </div>
-
-    <div class="section-divider"></div>
-    """, unsafe_allow_html=True)
 
 # MARKET + EXCHANGE
 
@@ -360,7 +336,7 @@ else:
 # STOCK VALIDATION
 
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=0)
 def validate_stock(ticker: str) -> bool:
     try:
         data = yf.download(ticker, period="5d", progress=False)
@@ -384,30 +360,20 @@ if not valid:
 
 # STOCK HEADER
 
-info = get_company_info(stock)
-
-if not info:
-    st.warning("⚠️ Couldn't fetch company info. Try refreshing.")
-    sector = "Unknown Sector"
-    industry = "Unknown Industry"
-else:
-    sector = info.get("sector", "Unknown Sector")
-    industry = info.get("industry", "Unknown Industry")
+try:
+    info = yf.Ticker(stock).info
+    company_name = info.get("longName") or info.get("shortName") or stock_input
+    sector = info.get("sector", "")
+    industry = info.get("industry", "")
+except Exception as e:
+    logger.exception("Failed to fetch company info for %s: %s", stock, e)
+    company_name = stock_input
+    sector = ""
+    industry = ""
 
 st.subheader(f"{company_name}  `{stock}`")
-st.markdown(
-    f"""
-    <div style="
-        color: #9ca3af;
-        font-size: 14px;
-        margin-top: -8px;
-        margin-bottom: 10px;
-    ">
-        📂 {sector} · {industry}
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+if sector:
+    st.caption(f"📂 {sector}   ·  {industry}")
 
 st.divider()
 
