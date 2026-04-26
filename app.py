@@ -18,15 +18,18 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=300)
 def get_company_info(ticker):
     try:
-        return yf.Ticker(ticker).info
+        info = yf.Ticker(ticker).info
+        if not info or "sector" not in info:
+            return None
+        
+        return info
     except:
-        return {}
+        return None
 
 # PAGE CONFIG
-
 
 st.set_page_config(
     page_title="AI Stock Advisor",
@@ -383,9 +386,13 @@ if not valid:
 
 info = get_company_info(stock)
 
-company_name = info.get("longName") or info.get("shortName") or stock_input
-sector = info.get("sector") or "Unknown Sector"
-industry = info.get("industry") or "Unknown Industry"
+if not info:
+    st.warning("⚠️ Couldn't fetch company info. Try refreshing.")
+    sector = "Unknown Sector"
+    industry = "Unknown Industry"
+else:
+    sector = info.get("sector", "Unknown Sector")
+    industry = info.get("industry", "Unknown Industry")
 
 st.subheader(f"{company_name}  `{stock}`")
 st.markdown(
