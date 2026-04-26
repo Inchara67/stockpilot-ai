@@ -402,8 +402,8 @@ if not valid:
 try:
     info = yf.Ticker(stock).info
     company_name = info.get("longName") or info.get("shortName") or stock_input
-    sector = info.get("sector", "")
-    industry = info.get("industry", "")
+    sector = info.get("sector")
+    industry = info.get("industry")
 except Exception as e:
     logger.exception("Failed to fetch company info for %s: %s", stock, e)
     company_name = stock_input
