@@ -42,10 +42,11 @@ st.markdown("""
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 40vh;  
     flex-direction: column;
+
+    margin-top: 40px;
+    margin-bottom: 20px;
     gap: 10px;
-    padding-top: 60px;  
 }
 
 /* Main Text */
