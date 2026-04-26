@@ -375,7 +375,7 @@ else:
 # STOCK VALIDATION
 
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=0)
 def validate_stock(ticker: str) -> bool:
     try:
         data = yf.download(ticker, period="5d", progress=False)
