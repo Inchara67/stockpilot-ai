@@ -45,7 +45,7 @@ st.markdown("""
     min-height: 40vh;  
     flex-direction: column;
     gap: 10px;
-    padding-top: 20px;  
+    padding-top: 60px;  
 }
 
 /* Main Text */
