@@ -287,25 +287,28 @@ header {visibility: hidden;}
     }
 }
 </style>
-
-<div class="container">
-    <div class="glitch-text">AI Stock Advisor</div>
-    <div class="trend-divider">
-    <svg viewBox="0 0 300 60" preserveAspectRatio="none">
-        <!-- zig-zag stock line -->
-        <path class="trend-path"
-              d="M0 40 L60 25 L120 35 L180 15 L240 25 L300 10" />
-              <circle class="trend-dot" cx="0" cy="0"></circle>
-    </svg>
-</div>
-    <p class="subtitle">
-        Real-time predictions · News sentiment · Investment calculator
-    </p>
-</div>
-<div class="section-divider"></div>
-
 """, unsafe_allow_html=True)
 
+hero = st.container()
+
+with hero:
+    st.markdown("""
+    <div class="container">
+        <div class="glitch-text">AI Stock Advisor</div>
+        <div class="trend-divider">
+            <svg viewBox="0 0 300 60" preserveAspectRatio="none">
+                <path class="trend-path"
+                      d="M0 40 L60 25 L120 35 L180 15 L240 25 L300 10" />
+                <circle class="trend-dot" cx="0" cy="0"></circle>
+            </svg>
+        </div>
+        <p class="subtitle">
+            Real-time predictions · News sentiment · Investment calculator
+        </p>
+    </div>
+
+    <div class="section-divider"></div>
+    """, unsafe_allow_html=True)
 
 # MARKET + EXCHANGE
 
