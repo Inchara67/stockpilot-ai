@@ -38,9 +38,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 20vh;
+    min-height: 100vh;  
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
+    padding-top: 40px; 
 }
 
 /* Main Text */
