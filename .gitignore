@@ -1,0 +1,5 @@
+.env
+models/*.pkl
+models/*_progress.txt
+__pycache__/
+*.pyc
