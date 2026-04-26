@@ -29,23 +29,31 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 
+* {
+    box-sizing: border-box;
+}
 .stApp {
     background-color: #0a0a0a;
 }
 
-.block-container {
-    padding-top: 1rem !important;
+header {visibility: hidden;}
+
+.main {
+    padding-top: 0rem !important;
 }
 
-/* Container */
+.block-container {
+    padding-top: 0rem !important;
+}
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 40vh;  
     flex-direction: column;
+
+    margin-top: 40px; 
+    margin-bottom: 20px;
     gap: 10px;
-    padding-top: 60px;  
 }
 
 /* Main Text */
@@ -245,7 +253,7 @@ st.markdown("""
     80%  { transform: translate(240px, 25px); }
     100% { transform: translate(300px, 10px); }
 }
-.divider {
+.section-divider {
     position: relative;
     width: 60%;
     height: 1px;
@@ -254,7 +262,7 @@ st.markdown("""
     overflow: hidden;
 }
 
-.divider::after {
+.section-divider::after {
     content: "";
     position: absolute;
     top: 0;
@@ -294,52 +302,10 @@ st.markdown("""
         Real-time predictions · News sentiment · Investment calculator
     </p>
 </div>
+<div class="section-divider"></div>
 
 """, unsafe_allow_html=True)
 
-
-st.markdown("""
-<style>
-
-.divider {
-    position: relative;
-    width: 60%;
-    height: 1px;
-    background: #333;
-    margin: 40px auto;
-    overflow: hidden;
-}
-
-.divider::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -50%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, #ffffff, transparent);
-    animation: sweep 2s ease-out;
-}
-
-@keyframes sweep {
-    0% {
-        left: -50%;
-        opacity: 0;
-    }
-    50% {
-        opacity: 1;
-    }
-    100% {
-        left: 100%;
-        opacity: 0;
-    }
-}
-
-</style>
-
-<div class="divider"></div>
-
-""", unsafe_allow_html=True)
 
 # MARKET + EXCHANGE
 
@@ -379,7 +345,7 @@ else:
 # STOCK VALIDATION
 
 
-@st.cache_data(ttl=0)
+@st.cache_data(ttl=300)
 def validate_stock(ticker: str) -> bool:
     try:
         data = yf.download(ticker, period="5d", progress=False)
@@ -416,7 +382,7 @@ except Exception as e:
 
 st.subheader(f"{company_name}  `{stock}`")
 if sector:
-    st.caption(f"📂 {sector}   ·  {industry}")
+    st.caption(f"📂 {sector}  ·  {industry}")
 
 st.divider()
 
