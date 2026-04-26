@@ -41,14 +41,17 @@ body {
     min-height: 40vh;  
     flex-direction: column;
     gap: 10px;
-    padding-top: 20px; 
+    padding-top: 20px;  
 }
 
 /* Main Text */
 .glitch-text {
     font-family: 'Orbitron', sans-serif;
     font-size: 70px;
-    color: #eaeaea;
+    color: #dbeafe;
+    text-shadow: 
+        0 0 8px rgba(59,130,246,0.3),
+        0 0 20px rgba(30,58,138,0.2);
     position: relative;
     letter-spacing: 2px;
 
@@ -88,14 +91,14 @@ body {
 }
 
 .glitch-text::before {
-    color: #ff4d6d;
+    color: #3b82f6;
     filter: blur(2px);
     clip-path: inset(30% 0 50% 0);
     animation: smear 1.2s ease-out forwards;
 }
 
 .glitch-text::after {
-    color: #ffffff;
+    color: #93c5fd;
     filter: blur(3px);
     clip-path: inset(60% 0 20% 0);
     animation: smear 1.4s ease-out forwards;
@@ -204,7 +207,7 @@ body {
 /* line path */
 .trend-path {
     fill: none;
-    stroke: #cfcfcf;
+    stroke: #60a5fa;
     stroke-width: 2;
 
     stroke-dasharray: 300;
@@ -215,9 +218,9 @@ body {
 
 /* moving dot */
 .trend-dot {
-    fill: #ffffff;
+    fill: #bfdbfe;
     r: 4;
-    filter: drop-shadow(0 0 4px rgba(255,255,255,0.6));
+    filter: drop-shadow(0 0 6px rgba(96,165,250,0.6));
 
     animation: moveDot 1.8s ease-out forwards;
 }
