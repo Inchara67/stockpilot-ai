@@ -29,22 +29,29 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 
+* {
+    box-sizing: border-box;
+}
 .stApp {
     background-color: #0a0a0a;
 }
 
-.block-container {
-    padding-top: 1rem !important;
+header {visibility: hidden;}
+
+.main {
+    padding-top: 0rem !important;
 }
 
-/* Container */
+.block-container {
+    padding-top: 0rem !important;
+}
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
 
-    margin-top: 40px;
+    margin-top: 40px; 
     margin-bottom: 20px;
     gap: 10px;
 }
@@ -280,24 +287,28 @@ st.markdown("""
     }
 }
 </style>
-
-<div class="container">
-    <div class="glitch-text">AI Stock Advisor</div>
-    <div class="trend-divider">
-    <svg viewBox="0 0 300 60" preserveAspectRatio="none">
-        <!-- zig-zag stock line -->
-        <path class="trend-path"
-              d="M0 40 L60 25 L120 35 L180 15 L240 25 L300 10" />
-              <circle class="trend-dot" cx="0" cy="0"></circle>
-    </svg>
-</div>
-    <p class="subtitle">
-        Real-time predictions · News sentiment · Investment calculator
-    </p>
-</div>
-<div class="section-divider"></div>
 """, unsafe_allow_html=True)
 
+hero = st.container()
+
+with hero:
+    st.markdown("""
+    <div class="container">
+        <div class="glitch-text">AI Stock Advisor</div>
+        <div class="trend-divider">
+            <svg viewBox="0 0 300 60" preserveAspectRatio="none">
+                <path class="trend-path"
+                      d="M0 40 L60 25 L120 35 L180 15 L240 25 L300 10" />
+                <circle class="trend-dot" cx="0" cy="0"></circle>
+            </svg>
+        </div>
+        <p class="subtitle">
+            Real-time predictions · News sentiment · Investment calculator
+        </p>
+    </div>
+
+    <div class="section-divider"></div>
+    """, unsafe_allow_html=True)
 
 # MARKET + EXCHANGE
 
@@ -337,7 +348,7 @@ else:
 # STOCK VALIDATION
 
 
-@st.cache_data(ttl=0)
+@st.cache_data(ttl=300)
 def validate_stock(ticker: str) -> bool:
     try:
         data = yf.download(ticker, period="5d", progress=False)
@@ -374,7 +385,7 @@ except Exception as e:
 
 st.subheader(f"{company_name}  `{stock}`")
 if sector:
-    st.caption(f"📂 {sector}   ·  {industry}")
+    st.caption(f"📂 {sector}  ·  {industry}")
 
 st.divider()
 
@@ -800,4 +811,4 @@ if "India" in market:
         "🕐 NSE/BSE trading hours: 9:15 AM – 3:30 PM IST (Mon–Fri). Outside hours, prices reflect last close.")
 else:
     st.caption(
-        "🕐 NYSE/NASDAQ trading hours: 9:30 AM – 4:00 PM ET (Mon–Fri). Outside hours, prices reflect last close.")
+        "🕐 NYSE/NASDAQ trading hours: 9:30 AM – 4:00 PM ET (Mon–Fri). Outside hours, prices reflect last close.")  LIKE THIS?
