@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 # PAGE CONFIG
 
 st.set_page_config(
-    page_title="AI Stock Advisor",
+    page_title="StockPilot-AI",
     page_icon="📈",
     layout="wide"
 )
