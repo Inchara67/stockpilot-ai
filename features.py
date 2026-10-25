@@ -9,6 +9,10 @@ def build_features(data: pd.DataFrame) -> pd.DataFrame:
     """
     df = data.copy()
 
+    # Indexes often have missing/zero volume on yfinance; treat as 0
+    # so dropna() doesn't wipe every row
+    df['Volume'] = df['Volume'].fillna(0)
+
     df['MA10'] = df['Close'].rolling(10).mean()
     df['MA50'] = df['Close'].rolling(50).mean()
     df['Return'] = df['Close'].pct_change()

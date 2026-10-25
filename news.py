@@ -4,44 +4,49 @@ import yfinance as yf
 logger = logging.getLogger(__name__)
 
 
-def fetch_news(ticker: str, max_articles: int = 10) -> list:
-    """
-    Fetch stock-specific news directly from yfinance.
-    No API key needed. Always relevant to the ticker.
-    """
-    try:
-        t = yf.Ticker(ticker)
-        raw_news = t.news  # already filtered to this stock
-    except Exception as e:
-        logger.exception(
-            "[news] yfinance news fetch failed for %s: %s", ticker, e)
-        return []
-
-    if not raw_news:
-        logger.warning("[news] No news returned by yfinance for %s", ticker)
-        return []
-
+def _parse(raw_news: list, max_articles: int) -> list:
     filtered = []
     for item in raw_news[:max_articles]:
-        # yfinance news structure
         content = item.get("content", {})
         title = content.get("title") or item.get("title", "")
         source = content.get("provider", {}).get("displayName") \
             or item.get("publisher", "")
-
-        # grab the canonical URL
         url = (
             content.get("canonicalUrl", {}).get("url")
             or item.get("link")
             or item.get("url", "")
         )
-
         if title and url:
-            filtered.append({
-                "title":  title,
-                "url":    url,
-                "source": source
-            })
-
-    logger.info("[news] %d articles fetched for %s", len(filtered), ticker)
+            filtered.append({"title": title, "url": url, "source": source})
     return filtered
+
+
+def fetch_news(ticker: str, max_articles: int = 10, query: str = None) -> list:
+    """
+    Fetch news from yfinance for a ticker. If nothing comes back and a
+    search query is given (e.g. an index name), fall back to a news search.
+    """
+    articles = []
+
+    try:
+        raw_news = yf.Ticker(ticker).news
+        if raw_news:
+            articles = _parse(raw_news, max_articles)
+    except Exception as e:
+        logger.exception("[news] ticker news failed for %s: %s", ticker, e)
+
+    # Fallback: search by name (needed for indices like ^NSEI)
+    if not articles and query:
+        try:
+            raw_news = yf.Search(query, news_count=max_articles).news
+            if raw_news:
+                articles = _parse(raw_news, max_articles)
+        except Exception as e:
+            logger.exception(
+                "[news] search fallback failed for %s: %s", query, e)
+
+    if not articles:
+        logger.warning("[news] No news found for %s", ticker)
+
+    logger.info("[news] %d articles fetched for %s", len(articles), ticker)
+    return articles

@@ -312,13 +312,50 @@ with hero:
 
 # MARKET + EXCHANGE
 
+INDICES = {
+    # Broad market
+    "Nifty 50": "^NSEI",
+    "Sensex": "^BSESN",
+    "Nifty Next 50": "^NSMIDCP",
+    "Nifty 100": "^CNX100",
+    "Nifty 200": "^CNX200",
+    "Nifty 500": "^CRSLDX",
+    "Nifty Midcap 50": "^NSEMDCP50",
+    "Nifty Smallcap": "^CNXSC",
+
+    # Sectoral
+    "Bank Nifty": "^NSEBANK",
+    "Nifty Financial Services": "^CNXFIN",
+    "Nifty PSU Bank": "^CNXPSUBANK",
+    "Nifty IT": "^CNXIT",
+    "Nifty Auto": "^CNXAUTO",
+    "Nifty FMCG": "^CNXFMCG",
+    "Nifty Pharma": "^CNXPHARMA",
+    "Nifty Metal": "^CNXMETAL",
+    "Nifty Realty": "^CNXREALTY",
+    "Nifty Energy": "^CNXENERGY",
+    "Nifty Media": "^CNXMEDIA",
+    "Nifty Infra": "^CNXINFRA",
+    "Nifty PSE": "^CNXPSE",
+    "Nifty MNC": "^CNXMNC",
+    "Nifty Services": "^CNXSERVICE",
+    "Nifty Commodities": "^CNXCMDT",
+}
+
 col_market, col_exchange, col_ticker = st.columns([1, 1, 2])
 
 with col_market:
-    market = st.selectbox("🌐 Market", ["US 🇺🇸", "India 🇮🇳"])
+    market = st.selectbox(
+        "🌐 Market", ["US 🇺🇸", "India 🇮🇳", "India Indices 🇮🇳"])
+
+is_index = "Indices" in market
 
 with col_exchange:
-    if "India" in market:
+    if is_index:
+        exchange = None
+        currency = "₹"
+        st.caption("Index (no exchange suffix)")
+    elif "India" in market:
         exchange = st.selectbox("🏦 Exchange", ["NSE", "BSE"])
         currency = "₹"
     else:
@@ -326,20 +363,25 @@ with col_exchange:
         currency = "$"
 
 with col_ticker:
-    placeholder_hint = "e.g. RELIANCE" if "India" in market else "e.g. AAPL"
+    if is_index:
+        stock_input = st.selectbox("📈 Index", list(INDICES.keys()))
+    else:
+        placeholder_hint = "e.g. RELIANCE" if "India" in market else "e.g. AAPL"
 
-    stock_input = st.text_input(
-        "🔠 Stock Symbol",
-        value="",
-        placeholder=placeholder_hint
-    )
-    if not stock_input.strip():
-        st.info("👆🏼 Enter a stock symbol above to get started.")
-        st.stop()
+        stock_input = st.text_input(
+            "🔠 Stock Symbol",
+            value="",
+            placeholder=placeholder_hint
+        )
+        if not stock_input.strip():
+            st.info("👆🏼 Enter a stock symbol above to get started.")
+            st.stop()
 
 # BUILD FULL TICKER
 
-if "India" in market:
+if is_index:
+    stock = INDICES[stock_input]
+elif "India" in market:
     suffix = ".NS" if exchange == "NSE" else ".BO"
     stock = stock_input + suffix
 else:
@@ -577,7 +619,8 @@ col_news, col_sentiment = st.columns([2, 1])
 
 with col_news:
     st.subheader("📰 Market News")
-    news = fetch_news(stock)
+    news = fetch_news(
+        stock, query=f"{stock_input} India" if is_index else None)
 
     if not news:
         st.warning("No relevant financial news found.")
@@ -635,12 +678,15 @@ st.divider()
 
 st.subheader("🧮 Investment Calculator")
 st.caption(
-    "Monte Carlo simulation using historical volatility — not financial advice")
+    "Monte Carlo simulation using historical volatility — not financial advice"
+    + (" · Indices can't be bought directly; this simulates an index-tracking investment (e.g. an index fund or ETF), ignoring fees and tracking error."
+       if is_index else "")
+)
 
 with st.expander("📖 How does this work?", expanded=False):
     st.markdown("""
     This calculator uses **Monte Carlo simulation** to model thousands of possible
-    futures based on the stock's historical monthly return and volatility.
+    futures based on the historical monthly return and volatility.
 
     - It runs **1,000 simulations** of your holding period
     - Each simulation uses a random monthly return drawn from historical data
